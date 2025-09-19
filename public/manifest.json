@@ -1,0 +1,58 @@
+{
+  "name": "DietAI - Personalized Nutrition Made Simple",
+  "short_name": "DietAI",
+  "description": "Generate personalized diet plans with AI. Track your nutrition, save favorites, and discover healthy recipes.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0891b2",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["health", "fitness", "lifestyle"],
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.jpg",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/android-chrome-512x512.jpg",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/apple-touch-icon.jpg",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Generate Diet",
+      "short_name": "Generate",
+      "description": "Create a new personalized diet plan",
+      "url": "/generate",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.jpg",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "My Favorites",
+      "short_name": "Favorites",
+      "description": "View your saved diets and meals",
+      "url": "/favorites",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.jpg",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
