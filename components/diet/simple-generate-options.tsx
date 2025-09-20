@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { getLocalStorageItem, setLocalStorageItem } from "@/hooks/use-local-storage"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
@@ -113,12 +114,12 @@ export function SimpleGenerateOptions() {
   })
 
   useEffect(() => {
-    const savedData = localStorage.getItem("dietai-form-data")
-    const savedOption = localStorage.getItem("dietai-selected-option")
-    const savedStep = localStorage.getItem("dietai-wizard-step")
+    const savedData = getLocalStorageItem("dietai-form-data")
+    const savedOption = getLocalStorageItem("dietai-selected-option")
+    const savedStep = getLocalStorageItem("dietai-wizard-step")
 
     if (savedData) {
-      setFormData(JSON.parse(savedData))
+      setFormData(savedData)
     }
     if (savedOption) {
       setSelectedOption(savedOption as "biometric" | "manual")
@@ -129,18 +130,18 @@ export function SimpleGenerateOptions() {
   }, [])
 
   useEffect(() => {
-    localStorage.setItem("dietai-form-data", JSON.stringify(formData))
+    setLocalStorageItem("dietai-form-data", formData)
   }, [formData])
 
   useEffect(() => {
     if (selectedOption) {
-      localStorage.setItem("dietai-selected-option", selectedOption)
+      setLocalStorageItem("dietai-selected-option", selectedOption)
     }
   }, [selectedOption])
 
   useEffect(() => {
     if (selectedOption === "manual") {
-      localStorage.setItem("dietai-wizard-step", currentStep.toString())
+      setLocalStorageItem("dietai-wizard-step", currentStep.toString())
     }
   }, [currentStep, selectedOption])
 

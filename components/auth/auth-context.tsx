@@ -1,6 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
+import { getLocalStorageItem, setLocalStorageItem, removeLocalStorageItem } from "@/hooks/use-local-storage"
 
 interface User {
   id: string
@@ -34,9 +35,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const checkAuth = async () => {
       try {
         // Simulate checking for existing session
-        const savedUser = localStorage.getItem("dietai-user")
+        const savedUser = getLocalStorageItem("dietai-user")
         if (savedUser) {
-          setUser(JSON.parse(savedUser))
+          setUser(savedUser)
         }
       } catch (error) {
         console.error("Auth check failed:", error)
@@ -62,7 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       setUser(mockUser)
-      localStorage.setItem("dietai-user", JSON.stringify(mockUser))
+      setLocalStorageItem("dietai-user", mockUser)
     } catch (error) {
       throw new Error("Login failed")
     } finally {
@@ -84,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       setUser(mockUser)
-      localStorage.setItem("dietai-user", JSON.stringify(mockUser))
+      setLocalStorageItem("dietai-user", mockUser)
     } catch (error) {
       throw new Error("Registration failed")
     } finally {
@@ -94,14 +95,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setUser(null)
-    localStorage.removeItem("dietai-user")
+    removeLocalStorageItem("dietai-user")
   }
 
   const updateUser = (updates: Partial<User>) => {
     if (user) {
       const updatedUser = { ...user, ...updates }
       setUser(updatedUser)
-      localStorage.setItem("dietai-user", JSON.stringify(updatedUser))
+      setLocalStorageItem("dietai-user", updatedUser)
     }
   }
 

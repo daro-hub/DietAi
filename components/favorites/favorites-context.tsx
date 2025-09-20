@@ -1,6 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
+import { getLocalStorageItem, setLocalStorageItem } from "@/hooks/use-local-storage"
 
 interface FavoriteItem {
   id: string
@@ -27,15 +28,15 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Load favorites from localStorage
-    const savedFavorites = localStorage.getItem("dietai-favorites")
+    const savedFavorites = getLocalStorageItem("dietai-favorites")
     if (savedFavorites) {
-      setFavorites(JSON.parse(savedFavorites))
+      setFavorites(savedFavorites)
     }
   }, [])
 
   const saveFavorites = (newFavorites: FavoriteItem[]) => {
     setFavorites(newFavorites)
-    localStorage.setItem("dietai-favorites", JSON.stringify(newFavorites))
+    setLocalStorageItem("dietai-favorites", newFavorites)
   }
 
   const addFavorite = (item: Omit<FavoriteItem, "id" | "savedAt">) => {

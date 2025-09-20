@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { getLocalStorageItem, setLocalStorageItem } from "@/hooks/use-local-storage"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Download, X } from "lucide-react"
@@ -21,6 +22,9 @@ export function PWAInstallPrompt() {
   const [isStandalone, setIsStandalone] = useState(false)
 
   useEffect(() => {
+    // Check if we're on the client side
+    if (typeof window === 'undefined') return
+
     // Check if running as PWA
     setIsStandalone(window.matchMedia("(display-mode: standalone)").matches)
 
@@ -52,11 +56,11 @@ export function PWAInstallPrompt() {
 
   const handleDismiss = () => {
     setShowPrompt(false)
-    localStorage.setItem("pwa-prompt-dismissed", "true")
+    setLocalStorageItem("pwa-prompt-dismissed", "true")
   }
 
   // Don't show if already installed, dismissed, or not supported
-  if (isStandalone || localStorage.getItem("pwa-prompt-dismissed") || (!deferredPrompt && !isIOS) || !showPrompt) {
+  if (isStandalone || getLocalStorageItem("pwa-prompt-dismissed") || (!deferredPrompt && !isIOS) || !showPrompt) {
     return null
   }
 
