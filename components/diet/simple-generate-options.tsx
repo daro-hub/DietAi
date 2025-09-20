@@ -150,22 +150,51 @@ export function SimpleGenerateOptions() {
     if (selectedOption !== "manual") return
     if (showSuggestionsDialog) return // Blocca scroll quando dialog è aperto
 
+    let scrollAccumulator = 0
     let lastScrollTime = 0
-    const scrollCooldown = 800 // 800ms tra le navigazioni per PC
+    let scrollTimeout: NodeJS.Timeout | null = null
+    const scrollCooldown = 300 // Ridotto a 300ms per touchpad
+    const scrollThreshold = 50 // Soglia per cambiare slide
+    const scrollDecay = 0.95 // Fattore di decadimento per l'accumulatore
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault()
       
       const now = Date.now()
-      if (now - lastScrollTime < scrollCooldown) return
       
-      if (e.deltaY > 0 && currentStep < wizardSteps.length - 1) {
-        lastScrollTime = now
-        nextStep()
-      } else if (e.deltaY < 0 && currentStep > 0) {
-        lastScrollTime = now
-        prevStep()
+      // Se è passato troppo tempo dall'ultimo scroll, resetta l'accumulatore
+      if (now - lastScrollTime > 1000) {
+        scrollAccumulator = 0
       }
+      
+      // Distingui tra scroll del mouse e touchpad
+      const isTouchpad = e.deltaMode === 0 // DOM_DELTA_PIXEL
+      const deltaMultiplier = isTouchpad ? 1 : 3 // Mouse wheel ha delta più grandi
+      
+      // Accumula il deltaY con moltiplicatore appropriato
+      scrollAccumulator += e.deltaY * deltaMultiplier
+      
+      // Applica decadimento per evitare accumulo eccessivo
+      scrollAccumulator *= scrollDecay
+      
+      lastScrollTime = now
+      
+      // Cancella il timeout precedente se esiste
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout)
+      }
+      
+      // Imposta un timeout per processare lo scroll
+      scrollTimeout = setTimeout(() => {
+        if (Math.abs(scrollAccumulator) > scrollThreshold) {
+          if (scrollAccumulator > 0 && currentStep < wizardSteps.length - 1) {
+            nextStep()
+          } else if (scrollAccumulator < 0 && currentStep > 0) {
+            prevStep()
+          }
+          scrollAccumulator = 0 // Reset dopo il cambio slide
+        }
+      }, isTouchpad ? 100 : 50) // Delay più lungo per touchpad
     }
 
     const handleTouchStart = (e: TouchEvent) => {
@@ -205,6 +234,9 @@ export function SimpleGenerateOptions() {
     return () => {
       document.removeEventListener('wheel', handleWheel)
       document.removeEventListener('touchstart', handleTouchStart)
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout)
+      }
     }
   }, [selectedOption, currentStep, wizardSteps.length, showSuggestionsDialog])
 
@@ -851,6 +883,17 @@ export function SimpleGenerateOptions() {
             </div>
           </DialogContent>
         </Dialog>
+        
+        {/* Indicatore di scroll */}
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-30">
+          <div className="flex items-center gap-2 bg-background/80 backdrop-blur-sm border rounded-full px-4 py-2 shadow-lg">
+            <ChevronUp className={`w-4 h-4 transition-colors ${currentStep > 0 ? 'text-foreground' : 'text-muted-foreground'}`} />
+            <span className="text-xs text-muted-foreground">
+              {currentStep + 1} of {wizardSteps.length}
+            </span>
+            <ChevronDown className={`w-4 h-4 transition-colors ${currentStep < wizardSteps.length - 1 ? 'text-foreground' : 'text-muted-foreground'}`} />
+          </div>
+        </div>
       </div>
     )
   }
