@@ -1,10 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { 
+  Heart,
+  Calendar,
+  Utensils,
+  Apple,
   ArrowLeft,
   X,
   Search,
@@ -33,26 +37,26 @@ interface FavoritesGridProps {
 
 const categoryConfig = {
   all: {
-    title: "All Favorites",
-    emoji: "💜",
+    title: "All",
+    icon: Heart,
     color: "bg-purple-500",
     count: 0
   },
   plan: {
     title: "Diet Plans",
-    emoji: "📋",
+    icon: Calendar,
     color: "bg-blue-500",
     count: 0
   },
   meal: {
     title: "Meals",
-    emoji: "🍱",
+    icon: Utensils,
     color: "bg-yellow-500",
     count: 0
   },
   ingredient: {
     title: "Ingredients",
-    emoji: "🥗",
+    icon: Apple,
     color: "bg-orange-500",
     count: 0
   }
@@ -125,8 +129,8 @@ export function FavoritesGrid({ favorites, onRemove }: FavoritesGridProps) {
                 onClick={() => setSelectedCategory(key as keyof typeof categoryConfig)}
               >
                 <CardContent className="p-6 text-center h-full flex flex-col justify-center">
-                  <div className="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                    {config.emoji}
+                  <div className="p-3 bg-white/20 rounded-full w-fit mx-auto mb-4 group-hover:bg-white/30 transition-colors duration-300">
+                    {React.createElement(config.icon, { className: "h-8 w-8 group-hover:scale-110 transition-transform duration-300" })}
                   </div>
                   <div className="text-lg text-white/90 font-medium">{config.title}</div>
                 </CardContent>
@@ -157,7 +161,7 @@ export function FavoritesGrid({ favorites, onRemove }: FavoritesGridProps) {
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <div className={`p-2 rounded-lg ${config.color} text-white`}>
-                <span className="text-2xl">{config.emoji}</span>
+                {React.createElement(config.icon, { className: "h-6 w-6" })}
               </div>
               <div>
                 <h1 className="font-bold text-xl">{config.title}</h1>
@@ -212,7 +216,7 @@ export function FavoritesGrid({ favorites, onRemove }: FavoritesGridProps) {
           <Card className="border-0 shadow-lg">
             <CardContent className="p-12 text-center">
               <div className={`p-4 rounded-full ${config.color} w-fit mx-auto mb-4 text-white`}>
-                <span className="text-5xl">{config.emoji}</span>
+                {React.createElement(config.icon, { className: "h-12 w-12" })}
               </div>
               <h3 className="font-bold text-xl mb-2">No {config.title.toLowerCase()} found</h3>
               <p className="text-muted-foreground mb-6">

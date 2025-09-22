@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { getLocalStorageItem, setLocalStorageItem } from "@/hooks/use-local-storage"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -30,6 +31,7 @@ import {
   Apple,
   Utensils,
   Cookie,
+  Edit,
 } from "lucide-react"
 
 const goalSuggestions = [
@@ -88,6 +90,7 @@ const wizardSteps = [
 ]
 
 export function SimpleGenerateOptions() {
+  const router = useRouter()
   const [selectedOption, setSelectedOption] = useState<"biometric" | "manual" | null>(null)
   const [currentStep, setCurrentStep] = useState(0)
   const [showSuggestions, setShowSuggestions] = useState<{
@@ -97,7 +100,6 @@ export function SimpleGenerateOptions() {
   }>({ goals: false, activityLevel: false, preferences: false })
 
   const [saveToAccount, setSaveToAccount] = useState(false)
-  const [showDietPlan, setShowDietPlan] = useState(false)
   const [showSuggestionsDialog, setShowSuggestionsDialog] = useState(false)
   const [selectedSuggestions, setSelectedSuggestions] = useState<string[]>([])
   const [currentSuggestionType, setCurrentSuggestionType] = useState<"goals" | "activityLevel" | "preferences">("goals")
@@ -382,16 +384,16 @@ export function SimpleGenerateOptions() {
       return
     }
     console.log("[v0] Form submitted with data:", formData)
-    setShowDietPlan(true)
+    // Save form data to localStorage for the review page
+    setLocalStorageItem("dietai-generated-plan", formData)
+    // Navigate to review page
+    router.push("/generate/review")
   }
 
   const handleSaveToAccount = () => {
     console.log("[v0] Saving user data to account:", formData)
   }
 
-  if (showDietPlan) {
-    return <DietPlanResult formData={formData} onBack={() => setShowDietPlan(false)} />
-  }
 
   if (selectedOption === null) {
     return (
@@ -453,7 +455,7 @@ export function SimpleGenerateOptions() {
         <Button 
           variant="ghost" 
           size="lg" 
-          onClick={() => setSelectedOption(null)} 
+          onClick={() => router.push("/generate")} 
           className="absolute top-4 left-0 z-20 h-12 w-8 p-0"
         >
           <ChevronLeft className="w-10 h-10" />
@@ -899,352 +901,4 @@ export function SimpleGenerateOptions() {
   }
 
   return null
-}
-
-function DietPlanResult({ formData, onBack }: { formData: any; onBack: () => void }) {
-  const [expandedMeals, setExpandedMeals] = useState<{ [key: string]: boolean }>({})
-
-  const toggleMeal = (mealId: string) => {
-    setExpandedMeals((prev) => ({ ...prev, [mealId]: !prev[mealId] }))
-  }
-
-  const openMealDetail = (mealId: string) => {
-    toggleMeal(mealId)
-  }
-
-  const getMealIcon = (mealId: string) => {
-    switch (mealId) {
-      case "breakfast": return <Coffee className="w-6 h-6" />
-      case "lunch": return <Utensils className="w-6 h-6" />
-      case "dinner": return <Utensils className="w-6 h-6" />
-      case "snacks": return <Cookie className="w-6 h-6" />
-      default: return <Apple className="w-6 h-6" />
-    }
-  }
-
-  const getIngredientIcon = (ingredientName: string) => {
-    const name = ingredientName.toLowerCase()
-    if (name.includes("oats") || name.includes("cereal")) return "🌾"
-    if (name.includes("banana") || name.includes("berry")) return "🍌"
-    if (name.includes("chicken") || name.includes("meat")) return "🍗"
-    if (name.includes("salmon") || name.includes("fish")) return "🐟"
-    if (name.includes("quinoa") || name.includes("rice")) return "🌾"
-    if (name.includes("broccoli") || name.includes("vegetable")) return "🥦"
-    if (name.includes("avocado")) return "🥑"
-    if (name.includes("yogurt")) return "🥛"
-    if (name.includes("almond") || name.includes("nut")) return "🥜"
-    if (name.includes("oil")) return "🫒"
-    return "🥗"
-  }
-
-  const exampleDiet = {
-    totalCalories: 2150,
-    totalMacros: { protein: 140, carbs: 215, fat: 95, fiber: 35 },
-    meals: [
-      {
-        id: "breakfast",
-        name: "Breakfast",
-        time: "7:00 AM",
-        calories: 520,
-        macros: { protein: 28, carbs: 45, fat: 22, fiber: 8 },
-        ingredients: [
-          {
-            id: "oats",
-            name: "Rolled Oats",
-            amount: "60g",
-            calories: 220,
-            macros: { protein: 8, carbs: 40, fat: 4, fiber: 6 },
-          },
-          {
-            id: "banana",
-            name: "Banana",
-            amount: "1 medium",
-            calories: 105,
-            macros: { protein: 1, carbs: 27, fat: 0, fiber: 3 },
-          },
-          {
-            id: "almonds",
-            name: "Almonds",
-            amount: "20g",
-            calories: 115,
-            macros: { protein: 4, carbs: 4, fat: 10, fiber: 2 },
-          },
-          {
-            id: "milk",
-            name: "Almond Milk",
-            amount: "200ml",
-            calories: 80,
-            macros: { protein: 3, carbs: 8, fat: 3, fiber: 1 },
-          },
-        ],
-      },
-      {
-        id: "lunch",
-        name: "Lunch",
-        time: "12:30 PM",
-        calories: 680,
-        macros: { protein: 45, carbs: 52, fat: 28, fiber: 12 },
-        ingredients: [
-          {
-            id: "chicken",
-            name: "Grilled Chicken Breast",
-            amount: "150g",
-            calories: 280,
-            macros: { protein: 35, carbs: 0, fat: 8, fiber: 0 },
-          },
-          {
-            id: "quinoa",
-            name: "Quinoa",
-            amount: "80g dry",
-            calories: 220,
-            macros: { protein: 8, carbs: 40, fat: 4, fiber: 5 },
-          },
-          {
-            id: "broccoli",
-            name: "Steamed Broccoli",
-            amount: "150g",
-            calories: 55,
-            macros: { protein: 6, carbs: 11, fat: 1, fiber: 5 },
-          },
-          {
-            id: "avocado",
-            name: "Avocado",
-            amount: "1/2 medium",
-            calories: 125,
-            macros: { protein: 2, carbs: 6, fat: 12, fiber: 5 },
-          },
-        ],
-      },
-      {
-        id: "dinner",
-        name: "Dinner",
-        time: "7:00 PM",
-        calories: 620,
-        macros: { protein: 42, carbs: 48, fat: 25, fiber: 10 },
-        ingredients: [
-          {
-            id: "salmon",
-            name: "Baked Salmon",
-            amount: "140g",
-            calories: 280,
-            macros: { protein: 35, carbs: 0, fat: 15, fiber: 0 },
-          },
-          {
-            id: "sweet-potato",
-            name: "Sweet Potato",
-            amount: "200g",
-            calories: 180,
-            macros: { protein: 4, carbs: 42, fat: 0, fiber: 6 },
-          },
-          {
-            id: "spinach",
-            name: "Sautéed Spinach",
-            amount: "100g",
-            calories: 35,
-            macros: { protein: 3, carbs: 4, fat: 1, fiber: 2 },
-          },
-          {
-            id: "olive-oil",
-            name: "Olive Oil",
-            amount: "10ml",
-            calories: 90,
-            macros: { protein: 0, carbs: 0, fat: 10, fiber: 0 },
-          },
-        ],
-      },
-      {
-        id: "snacks",
-        name: "Snacks",
-        time: "Throughout day",
-        calories: 330,
-        macros: { protein: 25, carbs: 20, fat: 18, fiber: 8 },
-        ingredients: [
-          {
-            id: "greek-yogurt",
-            name: "Greek Yogurt",
-            amount: "150g",
-            calories: 130,
-            macros: { protein: 15, carbs: 9, fat: 5, fiber: 0 },
-          },
-          {
-            id: "berries",
-            name: "Mixed Berries",
-            amount: "100g",
-            calories: 60,
-            macros: { protein: 1, carbs: 14, fat: 0, fiber: 6 },
-          },
-          {
-            id: "walnuts",
-            name: "Walnuts",
-            amount: "15g",
-            calories: 100,
-            macros: { protein: 2, carbs: 2, fat: 10, fiber: 1 },
-          },
-        ],
-      },
-    ],
-  }
-
-  return (
-    <div className="h-screen bg-background overflow-y-auto">
-      <div className="max-w-4xl mx-auto min-h-full">
-        {/* Header - Mobile optimized */}
-        <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b z-10 p-3">
-          <div className="flex items-center justify-between">
-            <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-            <div className="flex gap-1">
-              <Button variant="outline" size="sm" className="text-xs px-2">
-                <Sparkles className="w-3 h-3 mr-1" />
-                Regenerate
-              </Button>
-              <Button variant="outline" size="sm" className="text-xs px-2">
-                ❤️ Save
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Title - Mobile optimized */}
-        <div className="text-center p-4 pb-2">
-          <h1 className="text-xl font-bold mb-1">Your Diet Plan</h1>
-          <p className="text-sm text-muted-foreground">
-            {formData.age ? `${formData.age}y, ${formData.weight}kg, ${formData.height}m, ${formData.gender}` : 'Personalized nutrition plan'}
-          </p>
-        </div>
-
-        {/* Daily Totals - Moved to top */}
-        <div className="px-3 pb-4">
-          <Card className="bg-primary/5 border-primary/20">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-center text-base">Daily Totals</CardTitle>
-            </CardHeader>
-            <CardContent className="p-3">
-              <div className="grid grid-cols-2 gap-3 text-center">
-                <div className="p-2 bg-background rounded-lg">
-                  <div className="text-lg font-bold text-primary">{exampleDiet.totalCalories}</div>
-                  <div className="text-xs text-muted-foreground">Calories</div>
-                </div>
-                <div className="p-2 bg-background rounded-lg">
-                  <div className="text-sm font-bold">{exampleDiet.totalMacros.protein}g</div>
-                  <div className="text-xs text-muted-foreground">Protein</div>
-                </div>
-                <div className="p-2 bg-background rounded-lg">
-                  <div className="text-sm font-bold">{exampleDiet.totalMacros.carbs}g</div>
-                  <div className="text-xs text-muted-foreground">Carbs</div>
-                </div>
-                <div className="p-2 bg-background rounded-lg">
-                  <div className="text-sm font-bold">{exampleDiet.totalMacros.fat}g</div>
-                  <div className="text-xs text-muted-foreground">Fat</div>
-                </div>
-                <div className="p-2 bg-background rounded-lg">
-                  <div className="text-sm font-bold">{exampleDiet.totalMacros.fiber}g</div>
-                  <div className="text-xs text-muted-foreground">Fiber</div>
-                </div>
-                <div className="p-2 bg-background rounded-lg">
-                  <div className="text-sm font-bold">{Math.round(exampleDiet.totalCalories * 0.25)}g</div>
-                  <div className="text-xs text-muted-foreground">Sugar</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Meals List - Mobile optimized */}
-        <div className="space-y-3 px-3">
-          {exampleDiet.meals.map((meal) => (
-            <Card key={meal.id} className="cursor-pointer hover:shadow-md transition-shadow mx-0" onClick={() => openMealDetail(meal.id)}>
-              <CardContent className="p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3 flex-1 min-w-0">
-                    <div className="text-xl flex-shrink-0">
-                      {getMealIcon(meal.id)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-base font-semibold truncate">{meal.name}</h3>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-2 flex-shrink-0">
-                    {/* Macronutrients - Mobile compact */}
-                    <div className="text-right">
-                      <div className="text-sm font-bold">{meal.calories} cal</div>
-                      <div className="text-xs text-muted-foreground">
-                        P:{meal.macros.protein} C:{meal.macros.carbs} F:{meal.macros.fat}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Expanded Meal Details */}
-                {expandedMeals[meal.id] && (
-                  <div className="mt-3 space-y-3">
-                    {/* Macronutrients in separate cards */}
-                    <div className="grid grid-cols-2 gap-2">
-                      <Card className="p-2">
-                        <div className="text-center">
-                          <div className="text-lg font-bold text-primary">{meal.calories}</div>
-                          <div className="text-xs text-muted-foreground">Calories</div>
-                        </div>
-                      </Card>
-                      <Card className="p-2">
-                        <div className="text-center">
-                          <div className="text-sm font-bold">{meal.macros.protein}g</div>
-                          <div className="text-xs text-muted-foreground">Protein</div>
-                        </div>
-                      </Card>
-                      <Card className="p-2">
-                        <div className="text-center">
-                          <div className="text-sm font-bold">{meal.macros.carbs}g</div>
-                          <div className="text-xs text-muted-foreground">Carbs</div>
-                        </div>
-                      </Card>
-                      <Card className="p-2">
-                        <div className="text-center">
-                          <div className="text-sm font-bold">{meal.macros.fat}g</div>
-                          <div className="text-xs text-muted-foreground">Fat</div>
-                        </div>
-                      </Card>
-                    </div>
-
-                    {/* Ingredients */}
-                    <div className="space-y-2">
-                      <h4 className="font-semibold text-sm">Ingredients:</h4>
-                      {meal.ingredients.map((ingredient) => (
-                        <Card key={ingredient.id} className="hover:shadow-md transition-shadow">
-                          <CardContent className="p-2">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center space-x-2 flex-1 min-w-0">
-                                <div className="text-lg flex-shrink-0">{getIngredientIcon(ingredient.name)}</div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="font-medium text-sm truncate">{ingredient.name}</div>
-                                  <div className="text-xs text-muted-foreground">{ingredient.calories} cal</div>
-                                </div>
-                              </div>
-                              
-                              <div className="flex items-center space-x-2 flex-shrink-0">
-                                <div className="text-right">
-                                  <div className="font-medium text-sm">{ingredient.amount}</div>
-                                  <div className="text-xs text-muted-foreground">
-                                    P:{ingredient.macros.protein} C:{ingredient.macros.carbs} F:{ingredient.macros.fat}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-      </div>
-
-    </div>
-  )
 }
