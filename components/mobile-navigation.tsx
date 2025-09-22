@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useAuth } from "@/components/auth/auth-context"
 
-const mainNavigation = [
+const getMainNavigation = (user: any) => [
   { name: "Home", href: "/", icon: Home },
   { name: "Generate", href: "/generate", icon: Sparkles },
   { name: "Favorites", href: "/favorites", icon: Heart },
@@ -27,7 +27,9 @@ const allNavigation = [
 export function MobileNavigation() {
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { user, logout } = useAuth()
+  const { logout } = useAuth()
+  
+  const mainNavigation = getMainNavigation(true)
 
   const handleMenuClick = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -68,48 +70,24 @@ export function MobileNavigation() {
                   })}
 
                   <div className="border-t border-border my-2" />
-
-                  {!user ? (
-                    <>
-                      <Link
-                        href="/login"
-                        onClick={closeMenu}
-                        className="flex items-center gap-3 p-4 rounded-lg transition-colors text-foreground hover:bg-muted"
-                      >
-                        <User className="h-5 w-5" />
-                        <span className="font-medium">Sign In</span>
-                      </Link>
-                      <Link
-                        href="/register"
-                        onClick={closeMenu}
-                        className="flex items-center gap-3 p-4 rounded-lg transition-colors bg-primary text-primary-foreground"
-                      >
-                        <Sparkles className="h-5 w-5" />
-                        <span className="font-medium">Sign Up</span>
-                      </Link>
-                    </>
-                  ) : (
-                    <>
-                      <Link
-                        href="/onboarding"
-                        onClick={closeMenu}
-                        className="flex items-center gap-3 p-4 rounded-lg transition-colors text-foreground hover:bg-muted"
-                      >
-                        <Sparkles className="h-5 w-5" />
-                        <span className="font-medium">Setup Profile</span>
-                      </Link>
-                      <button
-                        onClick={() => {
-                          logout()
-                          closeMenu()
-                        }}
-                        className="flex items-center gap-3 p-4 rounded-lg transition-colors text-foreground hover:bg-muted w-full text-left"
-                      >
-                        <LogOut className="h-5 w-5" />
-                        <span className="font-medium">Sign Out</span>
-                      </button>
-                    </>
-                  )}
+                  <Link
+                    href="/onboarding"
+                    onClick={closeMenu}
+                    className="flex items-center gap-3 p-4 rounded-lg transition-colors text-foreground hover:bg-muted"
+                  >
+                    <Sparkles className="h-5 w-5" />
+                    <span className="font-medium">Setup Profile</span>
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout()
+                      closeMenu()
+                    }}
+                    className="flex items-center gap-3 p-4 rounded-lg transition-colors text-foreground hover:bg-muted w-full text-left"
+                  >
+                    <LogOut className="h-5 w-5" />
+                    <span className="font-medium">Sign Out</span>
+                  </button>
                 </div>
               </CardContent>
             </Card>
@@ -189,20 +167,15 @@ export function MobileNavigation() {
               )
             })}
 
-            {!user ? (
-              <div className="flex items-center gap-2">
-                <Button asChild variant="ghost">
-                  <Link href="/login">Sign In</Link>
-                </Button>
-                <Button asChild>
-                  <Link href="/register">Sign Up</Link>
-                </Button>
-              </div>
-            ) : (
+            <div className="flex items-center gap-2">
               <Button asChild variant="outline">
                 <Link href="/onboarding">Setup Profile</Link>
               </Button>
-            )}
+              <Button variant="ghost" onClick={logout}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
+            </div>
           </div>
         </div>
       </nav>

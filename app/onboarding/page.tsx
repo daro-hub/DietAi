@@ -1,5 +1,10 @@
 import { OnboardingFlow } from "@/components/onboarding/onboarding-flow"
+import { ProtectedRoute } from "@/components/auth/protected-route"
 
 export default function OnboardingPage() {
-  return <OnboardingFlow />
+  return (
+    <ProtectedRoute>
+      <OnboardingFlow />
+    </ProtectedRoute>
+  )
 }

@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { aiTheme, getCyclicColor } from "@/lib/ai-theme"
 import {
   User,
   X,
@@ -397,10 +398,10 @@ export function SimpleGenerateOptions() {
 
   if (selectedOption === null) {
     return (
-      <div className="min-h-screen bg-background p-4">
+      <div className={`min-h-screen ${aiTheme.primaryGradientBg} p-4`}>
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2">Generate Your Diet Plan</h1>
+            <h1 className={`text-3xl font-bold mb-2 ${aiTheme.primaryGradientText}`}>Generate Your Diet Plan</h1>
             <p className="text-muted-foreground">Choose how you want to create your personalized diet</p>
           </div>
 
@@ -408,14 +409,14 @@ export function SimpleGenerateOptions() {
             {/* Biometric Option */}
             <Card className="cursor-not-allowed opacity-50 relative overflow-hidden border-2 hover:border-muted transition-colors">
               <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FileText className="w-8 h-8 text-primary" />
+                <div className={`w-16 h-16 ${getCyclicColor(0, aiTheme.cardGradients)} rounded-full flex items-center justify-center mx-auto mb-4`}>
+                  <FileText className={`w-8 h-8 ${getCyclicColor(0, aiTheme.accentColors)}`} />
                 </div>
-                <h3 className="font-semibold mb-2">Biometric File</h3>
+                <h3 className={`font-semibold mb-2 ${getCyclicColor(0, aiTheme.textColors)}`}>Biometric File</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Upload your medical test results for maximum accuracy
                 </p>
-                <div className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full inline-block">
+                <div className={`${getCyclicColor(0, aiTheme.cardGradients)} ${getCyclicColor(0, aiTheme.accentColors)} text-xs px-2 py-1 rounded-full inline-block`}>
                   More Accurate
                 </div>
                 <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
@@ -428,18 +429,18 @@ export function SimpleGenerateOptions() {
 
             {/* Manual Option */}
             <Card
-              className="cursor-pointer border-2 hover:border-primary transition-colors"
+              className={`cursor-pointer border-2 hover:border-blue-500 transition-colors ${aiTheme.aiCard} ${aiTheme.aiCardHover}`}
               onClick={() => setSelectedOption("manual")}
             >
               <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <User className="w-8 h-8 text-primary" />
+                <div className={`w-16 h-16 ${getCyclicColor(1, aiTheme.cardGradients)} rounded-full flex items-center justify-center mx-auto mb-4`}>
+                  <User className={`w-8 h-8 ${getCyclicColor(1, aiTheme.accentColors)}`} />
                 </div>
-                <h3 className="font-semibold mb-2">Manual Input</h3>
+                <h3 className={`font-semibold mb-2 ${getCyclicColor(1, aiTheme.textColors)}`}>Manual Input</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Fill in your information manually through our guided wizard
                 </p>
-                <Button className="w-full">Start Manual Input</Button>
+                <Button className={`w-full ${aiTheme.aiButton}`}>Start Manual Input</Button>
               </CardContent>
             </Card>
           </div>
@@ -450,7 +451,7 @@ export function SimpleGenerateOptions() {
 
   if (selectedOption === "manual") {
     return (
-      <div className="fixed inset-0 bg-background z-50">
+      <div className={`fixed inset-0 ${aiTheme.primaryGradientBg} z-50`}>
         {/* Tasto indietro - In alto */}
         <Button 
           variant="ghost" 
@@ -462,13 +463,13 @@ export function SimpleGenerateOptions() {
         </Button>
 
         {/* Progress Bar - Verticale sul lato sinistro con position absolute */}
-        <div className="absolute left-0 top-0 w-8 h-full bg-muted/20 flex flex-col items-center justify-center space-y-6 z-10">
+        <div className="absolute left-0 top-0 w-8 h-full bg-white/20 backdrop-blur-sm flex flex-col items-center justify-center space-y-6 z-10">
           {wizardSteps.map((step, index) => (
             <div
               key={step.id}
               className={`rounded-full cursor-pointer transition-all duration-300 ${
                 index === currentStep
-                  ? "bg-black w-3 h-3 scale-110"
+                  ? `${aiTheme.primaryGradient} w-3 h-3 scale-110`
                   : "bg-gray-400 w-1.5 h-1.5"
               }`}
               onClick={() => goToStep(index)}
@@ -485,23 +486,23 @@ export function SimpleGenerateOptions() {
           >
             {wizardSteps.map((step, index) => (
               <div key={step.id} className="h-full w-full flex-shrink-0 flex items-center justify-center px-8">
-                <Card className="w-full max-w-lg mx-auto">
+                <Card className={`w-full max-w-lg mx-auto ${aiTheme.aiCard} ${aiTheme.aiCardHover} border border-gray-200`}>
                   <CardContent className="p-6">
                     {step.id === "intro" && (
                       <div className="text-center space-y-6">
                         <div>
-                          <h2 className="text-2xl font-bold mb-2">Let's Create Your Perfect Diet</h2>
+                          <h2 className={`text-2xl font-bold mb-2 ${aiTheme.primaryGradientText}`}>Let's Create Your Perfect Diet</h2>
                         </div>
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div className={`${getCyclicColor(0, aiTheme.cardGradients)} rounded-lg p-4`}>
                           <div className="flex items-start space-x-2">
-                            <Lightbulb className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                            <p className="text-sm text-blue-800">
+                            <Lightbulb className={`w-5 h-5 ${getCyclicColor(0, aiTheme.accentColors)} mt-0.5 flex-shrink-0`} />
+                            <p className={`text-sm ${getCyclicColor(0, aiTheme.textColors)}`}>
                               The more fields you complete and the more detailed descriptions you provide, the more
                               accurate and tailored your diet plan will be.
                             </p>
                           </div>
                         </div>
-                        <Button onClick={nextStep} className="w-full">
+                        <Button onClick={nextStep} className={`w-full ${aiTheme.aiButton}`}>
                           <Sparkles className="w-4 h-4 mr-2" />
                           Start
                         </Button>
@@ -510,7 +511,7 @@ export function SimpleGenerateOptions() {
 
                     {step.id === "age" && (
                       <div className="space-y-6 text-center">
-                        <h2 className="text-2xl font-bold">What's your age? {step.required && "*"}</h2>
+                        <h2 className={`text-2xl font-bold ${aiTheme.primaryGradientText}`}>What's your age? {step.required && "*"}</h2>
                         <div className="flex justify-center">
                           <input
                             type="number"
@@ -528,7 +529,7 @@ export function SimpleGenerateOptions() {
 
                     {step.id === "weight" && (
                       <div className="space-y-6 text-center">
-                        <h2 className="text-2xl font-bold">What's your weight? {step.required && "*"}</h2>
+                        <h2 className={`text-2xl font-bold ${aiTheme.primaryGradientText}`}>What's your weight? {step.required && "*"}</h2>
                         <div className="flex justify-center">
                           <input
                             type="number"
@@ -546,7 +547,7 @@ export function SimpleGenerateOptions() {
 
                     {step.id === "height" && (
                       <div className="space-y-6 text-center">
-                        <h2 className="text-2xl font-bold">What's your height? {step.required && "*"}</h2>
+                        <h2 className={`text-2xl font-bold ${aiTheme.primaryGradientText}`}>What's your height? {step.required && "*"}</h2>
                         <div className="flex justify-center">
                           <input
                             type="number"
@@ -565,11 +566,11 @@ export function SimpleGenerateOptions() {
 
                     {step.id === "gender" && (
                       <div className="space-y-6 text-center">
-                        <h2 className="text-2xl font-bold">What's your gender? {step.required && "*"}</h2>
+                        <h2 className={`text-2xl font-bold ${aiTheme.primaryGradientText}`}>What's your gender? {step.required && "*"}</h2>
                         <div className="grid grid-cols-2 gap-6 max-w-md mx-auto">
                           <Card
                             className={`cursor-pointer transition-all hover:shadow-md ${
-                              formData.gender === "male" ? "border-primary bg-primary/5" : ""
+                              formData.gender === "male" ? `${getCyclicColor(0, aiTheme.cardGradients)} border-blue-500` : ""
                             }`}
                             onClick={() => {
                               setFormData((prev) => ({ ...prev, gender: "male" }))
@@ -577,13 +578,13 @@ export function SimpleGenerateOptions() {
                             }}
                           >
                             <CardContent className="p-6 text-center">
-                              <div className="text-4xl font-bold mb-2">M</div>
+                              <div className={`text-4xl font-bold mb-2 ${getCyclicColor(0, aiTheme.accentColors)}`}>M</div>
                               <div className="text-sm text-muted-foreground">Male</div>
                             </CardContent>
                           </Card>
                           <Card
                             className={`cursor-pointer transition-all hover:shadow-md ${
-                              formData.gender === "female" ? "border-primary bg-primary/5" : ""
+                              formData.gender === "female" ? `${getCyclicColor(1, aiTheme.cardGradients)} border-purple-500` : ""
                             }`}
                             onClick={() => {
                               setFormData((prev) => ({ ...prev, gender: "female" }))
@@ -591,7 +592,7 @@ export function SimpleGenerateOptions() {
                             }}
                           >
                             <CardContent className="p-6 text-center">
-                              <div className="text-4xl font-bold mb-2">F</div>
+                              <div className={`text-4xl font-bold mb-2 ${getCyclicColor(1, aiTheme.accentColors)}`}>F</div>
                               <div className="text-sm text-muted-foreground">Female</div>
                             </CardContent>
                           </Card>
@@ -601,13 +602,13 @@ export function SimpleGenerateOptions() {
 
                     {step.id === "bodyType" && (
                       <div className="space-y-4 text-center">
-                        <h2 className="text-2xl font-bold">What's your body type?</h2>
+                        <h2 className={`text-2xl font-bold ${aiTheme.primaryGradientText}`}>What's your body type?</h2>
                         <div className="grid grid-cols-1 gap-3 max-w-md mx-auto">
-                          {bodyTypes.map((type) => (
+                          {bodyTypes.map((type, index) => (
                             <Card
                               key={type.id}
                               className={`cursor-pointer transition-all hover:shadow-md ${
-                                formData.bodyType === type.id ? "border-primary bg-primary/5" : ""
+                                formData.bodyType === type.id ? `${getCyclicColor(index, aiTheme.cardGradients)} border-blue-500` : ""
                               }`}
                               onClick={() => {
                                 setFormData((prev) => ({ ...prev, bodyType: type.id }))
@@ -615,7 +616,7 @@ export function SimpleGenerateOptions() {
                               }}
                             >
                               <CardContent className="p-3 flex items-center space-x-3">
-                                <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center flex-shrink-0">
+                                <div className={`w-12 h-12 ${getCyclicColor(index, aiTheme.cardGradients)} rounded-full flex items-center justify-center flex-shrink-0`}>
                                   <img
                                     src={`/body-type-${type.id}.jpg`}
                                     alt={type.name}
@@ -626,10 +627,10 @@ export function SimpleGenerateOptions() {
                                       if (nextElement) nextElement.style.display = "block"
                                     }}
                                   />
-                                  <div className="text-xs font-medium hidden">{type.name[0]}</div>
+                                  <div className={`text-xs font-medium hidden ${getCyclicColor(index, aiTheme.accentColors)}`}>{type.name[0]}</div>
                                 </div>
                                 <div className="text-left">
-                                  <div className="font-medium text-sm">{type.name}</div>
+                                  <div className={`font-medium text-sm ${formData.bodyType === type.id ? getCyclicColor(index, aiTheme.textColors) : ""}`}>{type.name}</div>
                                   <div className="text-xs text-muted-foreground">{type.description}</div>
                                 </div>
                               </CardContent>
@@ -642,13 +643,13 @@ export function SimpleGenerateOptions() {
                     {step.id === "goals" && (
                       <div className="space-y-6">
                         <div className="text-center">
-                          <h2 className="text-2xl font-bold">What are your goals? {step.required && "*"}</h2>
+                          <h2 className={`text-2xl font-bold ${aiTheme.primaryGradientText}`}>What are your goals? {step.required && "*"}</h2>
                         </div>
                         <div className="flex justify-center">
                           <Button
                             variant="outline"
                             onClick={() => openSuggestionsDialog("goals")}
-                            className="border"
+                            className={`${aiTheme.aiButtonOutline}`}
                           >
                             Suggest <Sparkles className="w-4 h-4 ml-1" />
                           </Button>
@@ -665,13 +666,13 @@ export function SimpleGenerateOptions() {
                     {step.id === "activityLevel" && (
                       <div className="space-y-6">
                         <div className="text-center">
-                          <h2 className="text-2xl font-bold">What's your activity level? {step.required && "*"}</h2>
+                          <h2 className={`text-2xl font-bold ${aiTheme.primaryGradientText}`}>What's your activity level? {step.required && "*"}</h2>
                         </div>
                         <div className="flex justify-center">
                           <Button
                             variant="outline"
                             onClick={() => openSuggestionsDialog("activityLevel")}
-                            className="border"
+                            className={`${aiTheme.aiButtonOutline}`}
                           >
                             Suggest <Sparkles className="w-4 h-4 ml-1" />
                           </Button>
@@ -688,13 +689,13 @@ export function SimpleGenerateOptions() {
                     {step.id === "preferences" && (
                       <div className="space-y-6">
                         <div className="text-center">
-                          <h2 className="text-2xl font-bold">Any dietary preferences?</h2>
+                          <h2 className={`text-2xl font-bold ${aiTheme.primaryGradientText}`}>Any dietary preferences?</h2>
                         </div>
                         <div className="flex justify-center">
                           <Button
                             variant="outline"
                             onClick={() => openSuggestionsDialog("preferences")}
-                            className="border"
+                            className={`${aiTheme.aiButtonOutline}`}
                           >
                             Suggest <Sparkles className="w-4 h-4 ml-1" />
                           </Button>
@@ -711,7 +712,7 @@ export function SimpleGenerateOptions() {
                     {step.id === "recap" && (
                       <div className="space-y-6">
                         <div className="text-center">
-                          <h2 className="text-2xl font-bold">Review Your Information</h2>
+                          <h2 className={`text-2xl font-bold ${aiTheme.primaryGradientText}`}>Review Your Information</h2>
                         </div>
 
                         <div className="space-y-4">
@@ -818,13 +819,17 @@ export function SimpleGenerateOptions() {
                         <Card className="cursor-pointer py-1 px-3" onClick={() => setSaveToAccount(!saveToAccount)}>
                           <CardContent className="p-0">
                             <div className="flex items-center space-x-3">
-                              <Checkbox checked={saveToAccount} onCheckedChange={(checked) => setSaveToAccount(checked === true)} />
+                              <Checkbox 
+                                checked={saveToAccount} 
+                                onCheckedChange={(checked) => setSaveToAccount(checked === true)}
+                                className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                              />
                               <p className="font-medium text-sm">Remember this informations</p>
                             </div>
                           </CardContent>
                         </Card>
 
-                        <Button className="w-full" size="lg" onClick={handleSubmit} disabled={!isFormValid()}>
+                        <Button className={`w-full ${aiTheme.aiButton}`} size="lg" onClick={handleSubmit} disabled={!isFormValid()}>
                           Generate <Sparkles className="w-4 h-4 ml-2" />
                         </Button>
                       </div>
@@ -840,11 +845,11 @@ export function SimpleGenerateOptions() {
         {/* Dialog per suggerimenti */}
         <Dialog open={showSuggestionsDialog} onOpenChange={setShowSuggestionsDialog}>
           <DialogContent 
-            className=""
+            className={`${aiTheme.aiCard} border border-gray-200`}
             onWheel={(e) => e.stopPropagation()}
           >
             <DialogHeader>
-              <DialogTitle>
+              <DialogTitle className={`${aiTheme.primaryGradientText}`}>
                 Select {currentSuggestionType === "goals" ? "Goals" : 
                        currentSuggestionType === "activityLevel" ? "Activity Level" : 
                        "Preferences"}
@@ -853,12 +858,16 @@ export function SimpleGenerateOptions() {
             <div className="space-y-4">
               <div className="max-h-[50vh] overflow-y-auto" onWheel={(e) => e.stopPropagation()}>
                 <div className="flex flex-col gap-3 items-center w-full">
-                  {getSuggestions(currentSuggestionType).map((suggestion) => (
+                  {getSuggestions(currentSuggestionType).map((suggestion, index) => (
                     <Button
                       key={suggestion}
                       variant={selectedSuggestions.includes(suggestion) ? "default" : "outline"}
                       onClick={() => handleSuggestionSelect(suggestion)}
-                      className="justify-start h-auto p-3 text-left w-fit"
+                      className={`justify-start h-auto p-3 text-left w-fit ${
+                        selectedSuggestions.includes(suggestion) 
+                          ? aiTheme.aiButton 
+                          : `${aiTheme.aiButtonOutline} hover:${getCyclicColor(index, aiTheme.cardGradients)}`
+                      }`}
                     >
                       {selectedSuggestions.includes(suggestion) && (
                         <Check className="w-4 h-4 mr-2" />
@@ -872,12 +881,14 @@ export function SimpleGenerateOptions() {
                 <Button
                   variant="outline"
                   onClick={() => setShowSuggestionsDialog(false)}
+                  className={aiTheme.aiButtonOutline}
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={applySuggestions}
                   disabled={selectedSuggestions.length === 0}
+                  className={aiTheme.aiButton}
                 >
                   Done ({selectedSuggestions.length})
                 </Button>

@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Calendar, MoreHorizontal, Eye, Download, Trash2, Copy, Share } from "lucide-react"
+import { aiTheme, getCyclicColor } from "@/lib/ai-theme"
 
 interface FavoritePlanCardProps {
   item: any
@@ -12,6 +13,7 @@ interface FavoritePlanCardProps {
 }
 
 export function FavoritePlanCard({ item, onRemove }: FavoritePlanCardProps) {
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
@@ -21,8 +23,7 @@ export function FavoritePlanCard({ item, onRemove }: FavoritePlanCardProps) {
   }
 
   const handleView = () => {
-    // Navigate to plan view
-    console.log("View plan:", item.id)
+    window.location.href = `/favorites/plan/${item.id}`
   }
 
   const handleDuplicate = () => {
@@ -41,11 +42,11 @@ export function FavoritePlanCard({ item, onRemove }: FavoritePlanCardProps) {
   }
 
   return (
-    <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
+    <Card className={`${aiTheme.aiCard} ${aiTheme.aiCardHover} border border-gray-200`}>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <CardTitle className="text-lg font-heading font-bold">{item.name}</CardTitle>
+            <CardTitle className={`text-lg font-heading font-bold ${getCyclicColor(1, aiTheme.textColors)}`}>{item.name}</CardTitle>
             <CardDescription className="mt-1">{item.description}</CardDescription>
           </div>
 
@@ -88,21 +89,21 @@ export function FavoritePlanCard({ item, onRemove }: FavoritePlanCardProps) {
 
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center">
-            <div className="text-lg font-bold text-primary">{item.data.totalCalories}</div>
-            <div className="text-xs text-muted-foreground">Daily Calories</div>
+          <div className={`text-center p-3 ${getCyclicColor(0, aiTheme.cardGradients)} rounded-lg`}>
+            <div className={`text-lg font-bold ${getCyclicColor(0, aiTheme.accentColors)}`}>{item.data.totalCalories}</div>
+            <div className={`text-xs ${getCyclicColor(0, aiTheme.accentColors)} opacity-70`}>Daily Calories</div>
           </div>
-          <div className="text-center">
-            <div className="text-lg font-bold text-secondary">{item.data.macros.protein}g</div>
-            <div className="text-xs text-muted-foreground">Protein</div>
+          <div className={`text-center p-3 ${getCyclicColor(1, aiTheme.cardGradients)} rounded-lg`}>
+            <div className={`text-lg font-bold ${getCyclicColor(1, aiTheme.accentColors)}`}>{item.data.macros.protein}g</div>
+            <div className={`text-xs ${getCyclicColor(1, aiTheme.accentColors)} opacity-70`}>Protein</div>
           </div>
-          <div className="text-center">
-            <div className="text-lg font-bold text-blue-500">{item.data.macros.carbs}g</div>
-            <div className="text-xs text-muted-foreground">Carbs</div>
+          <div className={`text-center p-3 ${getCyclicColor(2, aiTheme.cardGradients)} rounded-lg`}>
+            <div className={`text-lg font-bold ${getCyclicColor(2, aiTheme.accentColors)}`}>{item.data.macros.carbs}g</div>
+            <div className={`text-xs ${getCyclicColor(2, aiTheme.accentColors)} opacity-70`}>Carbs</div>
           </div>
-          <div className="text-center">
-            <div className="text-lg font-bold text-orange-500">{item.data.macros.fat}g</div>
-            <div className="text-xs text-muted-foreground">Fat</div>
+          <div className={`text-center p-3 ${getCyclicColor(3, aiTheme.cardGradients)} rounded-lg`}>
+            <div className={`text-lg font-bold ${getCyclicColor(3, aiTheme.accentColors)}`}>{item.data.macros.fat}g</div>
+            <div className={`text-xs ${getCyclicColor(3, aiTheme.accentColors)} opacity-70`}>Fat</div>
           </div>
         </div>
 
@@ -121,11 +122,11 @@ export function FavoritePlanCard({ item, onRemove }: FavoritePlanCardProps) {
         </div>
 
         <div className="flex gap-2">
-          <Button onClick={handleView} className="flex-1">
+          <Button onClick={handleView} className={`flex-1 ${aiTheme.aiButton}`}>
             <Eye className="h-4 w-4 mr-2" />
             View Plan
           </Button>
-          <Button onClick={handleDuplicate} variant="outline">
+          <Button onClick={handleDuplicate} variant="outline" className={aiTheme.aiButtonOutline}>
             <Copy className="h-4 w-4 mr-2" />
             Use Again
           </Button>
